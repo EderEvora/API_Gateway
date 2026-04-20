@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -17,5 +17,10 @@ def get_user_by_id(id):
         if user['id'] == id:
             return jsonify(user)
 
+@app.route('/users', methods= ['POST'])
+def add_user():
+    new_user = request.get_json()
+    users.append(new_user)
+    return jsonify(users)
 
 app.run(port=5001, debug=True)
