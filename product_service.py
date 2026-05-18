@@ -1,6 +1,10 @@
 from flask import Flask, jsonify, request
+import sys
 
 app = Flask(__name__)
+
+PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 5002
+INSTANCE = f"product-service:{PORT}"
 
 products = [ 
     {'id': 1, 'name': 'Laptop', 'brand': 'Huawei', 'price': 30000}, 
@@ -10,7 +14,8 @@ products = [
 
 @app.route('/products', methods=['GET'])
 def get_products():
-    return jsonify(products)
+    print(f"[{INSTANCE}] GET /products")
+    return jsonify({'instance': INSTANCE, 'data': products})
 
 @app.route('/products/<int:id>', methods=['PUT'])
 def edit_product(id):
@@ -18,7 +23,7 @@ def edit_product(id):
     for indice, product in enumerate(products):
         if product['id'] == id:
             products[indice].update(data)
-            return jsonify(products[indice])
+            return jsonify({'instance': INSTANCE, 'data': products[indice]})
 
 
-app.run(port=5002, debug=True)
+app.run(port=PORT, host='localhost', debug=True)
